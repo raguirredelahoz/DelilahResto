@@ -22,12 +22,12 @@ git clone https://github.com/raguirredelahoz/DelilahResto.git
 * Intalar dependencias:         npm install
 
 
-Express
-Nodemon
-Jsonwebtoken
-Dotenv
-Mysql
-express-jwt
+Express,
+Nodemon,
+Jsonwebtoken,
+Dotenv,
+Mysql,
+express-jwt.
 
 
 *  Base de Datos:
