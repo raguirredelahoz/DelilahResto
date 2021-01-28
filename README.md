@@ -51,7 +51,7 @@ Desde Postman podemos realizar todas las operciones CRUD en cada uno de las APIS
 * Documentación de las APIS:
 
 
-En el archivo spec.yml  encontraremos el detalle de cada API realizada en Swagger.
+En el archivo swagger(1).yaml  encontraremos el detalle de cada API realizada en Swagger.
 
 
 
