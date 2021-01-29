@@ -1,0 +1,380 @@
+swagger: "2.0"
+info:
+  description: "Sistema de pedidos Online para un restaurante. La API REST permitirá realizar altas, bajas, modificaciones y obteción de información sobre una estructura de datos."
+  version: "1.0.0"
+  title: "Delilah Restó"
+  termsOfService: "http://delilah.io/terms/"
+  contact:
+    email: "raguirre@delilah.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "delilahresto.swagger.io"
+basePath: "/v2"
+tags:
+- name: "productos"
+  description: "Detalle de los productos disponibles"
+- name: "ordenes"
+  description: "Detalle de los pedidos"
+- name: "usuarios"
+  description: "Listado de usuarios registrados"
+schemes:
+- "https"
+- "http"
+paths:
+  /productos:
+    post:
+      tags:
+      - "productos"
+      summary: "Adiconar un producto al menú"
+      description: "Solo el administrador puede agrgar pructos al menú"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Nuevos productos que se adicionan al menú"
+        required: true
+        schema:
+          $ref: "#/definitions/Productos"
+      responses:
+        "201":
+          description: "Producto creado correctamente"
+        "409":
+          description: "Duplicate entry for key 'nombre'"
+    put:
+      tags:
+      - "productos"
+      summary: "Actualizar un producto existente"
+      description: "Solo el usuario con rol de administrador puede actulaizar la información de los productos"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Modificación de algun dato del listado de productos"
+        required: true
+        schema:
+          $ref: "#/definitions/Productos"
+      responses:
+        "201":
+          description: "Producto actualizado correctamente"
+  /productos/:
+    get:
+      tags:
+      - "productos"
+      summary: "Buscar lista de productos"
+      description: "Se obtiene la lista actualizada de productos disponibles, esta opración la pueden realizar todos los usuarios registrados"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "status"
+        in: "query"
+        description: "listado de productos disponibles en el restaurante"
+        required: false 
+        type: "array"
+        items:
+          type: "string"
+          default: "available"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "ok"
+        "401":
+          description: "Usuario/ password incorrecto"
+    delete:
+      tags:
+      - "productos"
+      summary: "Eliminar productos por ID"
+      description: "Solo el administardor elimina productos del menú"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Nuevos productos que se adicionan al menú"
+        required: true
+        schema:
+          $ref: "#/definitions/Productos"
+      responses:
+        "201":
+          description: "Producto eliminado correctamente"
+        "401":
+          description: "Usuario/ password incorrecto"
+  /ordenes:
+    get:
+      tags:
+      - "ordenes"
+      summary: "Información de pedidos del usuario que se registró"
+      description: "Esta información la puede ver el usuario registrado"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "operación exitosa"
+        "401":
+          description: "Usuario/ password incorrecto" 
+  /ordenes/byUser:
+    get:
+      tags:
+      - "ordenes"
+      summary: "Información de pedidos"
+      description: "Esta información solo tiene acceso el administrador"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "operación exitosa" 
+        "401":
+          description: "Usuario/ password incorrecto"  
+  /ordenes/:
+    post:
+      tags:
+      - "ordenes"
+      summary: "Crear un nuevo pedido el usuario que inicia la sesion"
+      description: "Nuevo Pedido creado por usuarios"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Nuevo pedido creado"
+        required: true
+        schema:
+          $ref: "#/definitions/Order"
+      responses:
+        "201":
+          description: "orden creada correctamente"
+        "401":
+          description: "Usuario/ password incorrecto"
+    put:
+      tags:
+      - "ordenes"
+      summary: "Actualizar un pedido existente"
+      description: "Se modifica el estado de un pedido"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Modificación del estado de un pedido"
+        required: true
+        schema:
+          $ref: "#/definitions/Order"
+      responses:
+        "201":
+          description: "Pedido actualizado correctamente" 
+        "401":
+          description: "Usuario/ password incorrecto" 
+    delete:
+      tags:
+      - "ordenes"
+      summary: "Eliminar pedido por ID"
+      description: "El administardor elimina pedidos"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Pedido eliminado"
+        required: true
+        schema:
+          $ref: "#/definitions/Order"
+      responses:
+        "201":
+          description: "Orden eliminada correctamente"
+        "401":
+          description: "Usuario/ password incorrecto"
+  /usuarios:
+    post:
+      tags:
+      - "usuarios"
+      summary: "Crear nuevos usuarios"
+      description: "Todos los usuarios cuando se logean pueden diligenciar los campos para crear un nuevo usuario"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Crear nuevo usuario a la base de datos"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "201":
+          description: "Usuario creado correctamente"
+        "409":
+          description: "Duplicate entry for key 'nombre'"
+  /usuarios/{username}:
+    get:
+      tags:
+      - "usuarios"
+      summary: "Obtener listado actualizado de usuarios"
+      description: "Información de usuarios registrados"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: " Información de los usuarios registrados en la base de datos "
+        required: true
+        type: "string"
+      responses:
+        "401":
+          description: "Usuario/ password incorrecto"
+    put:
+      tags:
+      - "usuarios"
+      summary: "Actualizar algun dato del usuario"
+      description: "Modifica la información del usuario que inicia la sesion"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "Información modificad de un usuario"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "t"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "201":
+          description: "Usuario actualizado correctamente"
+        "401":
+          description: "Usuario/ password incorrecto"
+    delete:
+      tags:
+      - "usuarios"
+      summary: "Eliminar usuarios de la base de datos"
+      description: "Operación realizada solo por usuario administrador"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "Usuario eliminada de la base"
+        required: true
+        type: "string"
+      responses:
+        "201":
+          description: "Usuario eliminada correctamente"
+        "401":
+          description: "Usuario/ password incorrecto"
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Order:
+    type: "object"
+    properties:
+      id_orden:
+        type: "integer"
+        format: "int64"
+      fecha:
+        type: "string"
+        format: "date -time"
+      cliente:
+        type: "integer"
+        format: "int64"
+      valor_total:
+        type: "string"
+        format: "int64"
+      metodo_de_pago:
+        type: "string"
+        description: "Forma de pago"
+        enum:
+        - "efectivo"
+        - "debito"
+        - "credito"
+    xml:
+      name: "Order"
+  User:
+    type: "object"
+    properties:
+      id_usuario:
+        type: "integer"
+        format: "int64"
+      nombre_usuario:
+        type: "string"
+      nombre_completo:
+        type: "string"
+      correo_electronico:
+        type: "string"
+      telefono:
+        type: "string"
+      password:
+        type: "string"
+      dirección:
+        type: "string"
+      rol:
+        type: "integer"
+        format: "int32"
+        description: "rol del usuario"
+        enum:
+        - "administrador"
+        - "basico"
+    xml:
+      name: "User"
+  Productos:
+    type: "object"
+    required:
+    - "name"
+    - "photoUrls"
+    properties:
+      id_producto:
+        type: "integer"
+        format: "int64"
+      nombre:
+        type: "string"
+        example: "hamburguesa"
+      foto:
+        type: "array"
+        xml:
+          name: "photoUrl"
+          wrapped: true
+        items:
+          type: "string"
+      precio:
+        type: "integer"
+      favorito:
+        type: "string"
+    xml:
+      name: "Pet"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
