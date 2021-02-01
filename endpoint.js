@@ -112,7 +112,7 @@ server.post('/ordenes', login.autenticar, (req, res) => {
     })
 });
 
-server.delete('/ordenes', login.autenticar, (req, res) => {
+server.delete('/ordenes', login.autenticar, login.validarAdministrador, (req, res) => {
     let eliminar= Object.values(req.body);
     ordenes.eliminarOrdenes(eliminar).then(orden => {
     res.status(201).json('Orden eliminada correctamente')} )
